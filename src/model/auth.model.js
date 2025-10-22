@@ -39,7 +39,13 @@ const userSchema = new Schema({
     resetPasswordExpires: {
         type: Date,
         default: null
-    }
+    },
+    image: { type: String, required: true },     // path or URL
+    bio: { type: String, required: true },
+    mobile: { type: String, required: true },
+    country: { type: String, required: true },
+    state: { type: String, required: true },
+    city: { type: String, required: true }
 
 }, { timestamps: true })
 
