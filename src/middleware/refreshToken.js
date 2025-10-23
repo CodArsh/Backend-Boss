@@ -14,7 +14,6 @@ export const refreshAccessToken = (req, res) => {
       {
         id: decoded.id,
         email: decoded.email,
-        number: decoded.number,
       },
       process.env.TOKEN_SECRET_KEY,
       { expiresIn: "1m" }

@@ -7,13 +7,6 @@ const userSchema = new Schema({
         required: true,
         lowercase: true
     },
-    number: {
-        type: String,
-        trim: true,
-        required: true,
-        minlength: 10,
-        maxlength: 10
-    },
     email: {
         type: String,
         trim: true,
@@ -34,18 +27,16 @@ const userSchema = new Schema({
     },
     resetPasswordToken: {
         type: String,
-        default: null
     },
     resetPasswordExpires: {
         type: Date,
-        default: null
     },
-    image: { type: String, required: true },     // path or URL
-    bio: { type: String, required: true },
-    mobile: { type: String, required: true },
-    country: { type: String, required: true },
-    state: { type: String, required: true },
-    city: { type: String, required: true }
+    image: { type: String },     // path or URL
+    bio: { type: String },
+    mobile: { type: String },
+    country: { type: String },
+    state: { type: String },
+    city: { type: String }
 
 }, { timestamps: true })
 

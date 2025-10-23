@@ -10,6 +10,7 @@ import AuthRouter from "./src/router/auth.router.js";
 import TaskRouter from "./src/router/task.router.js";
 import ProfileRouter from "./src/router/profile.router.js";
 import PlaceRouter from "./src/router/place.router.js";
+import WpRouter from "./src/router/wpAuth.router.js";
 
 const app = express();
 (async () => {
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/auth", AuthRouter)
+app.use("/auth/whatsapp", WpRouter)
 app.use("/task", TaskRouter)
 app.use("/update-profile", ProfileRouter)
 app.use('/place', PlaceRouter)

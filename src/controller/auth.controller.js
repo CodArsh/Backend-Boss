@@ -8,14 +8,10 @@ import { TryError, CatchError } from "../utils/errors.js";
 
 const signupRequest = async (req, res) => {
     try {
-        const { username, email, password, number, dob } = req.body;
+        const { username, email, password, dob } = req.body;
 
         const emailAlreadyExist = await UserModel.findOne({ email });
         if (emailAlreadyExist) throw TryError("Email already registered", 400);
-
-        const mobileNumberAlreadyExist = await UserModel.findOne({ number });
-        if (mobileNumberAlreadyExist)
-            throw TryError("Mobile number already registered", 400);
 
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const otpExpires = new Date(Date.now() + 2 * 60 * 1000);
@@ -26,7 +22,6 @@ const signupRequest = async (req, res) => {
         await OtpModel.create({
             username,
             email,
-            number,
             dob,
             password: encryptedPassword,
             otp,
@@ -65,10 +60,8 @@ const verifySignupOTP = async (req, res) => {
         await UserModel.create({
             username: record.username,
             email: record.email,
-            number: record.number,
             dob: record.dob,
             password: record.password,
-            isVerified: true
         });
 
         // remove temp record
@@ -107,15 +100,15 @@ const resendSignupOTP = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const { email, number, password } = req.body
+        const { email, mobile, password } = req.body
 
-        if ((!email && !number) || !password) {
+        if ((!email && !mobile) || !password) {
             throw TryError("Email or phone and password are required", 400);
         }
 
         const user = await UserModel.findOne({
-            $or: [{ email: email }, { number: number }]
-        }, { id: 1, email: 1, number: 1, username: 1, dob: 1, password: 1 })
+            $or: [{ email: email }, { mobile: mobile }]
+        }, { id: 1, email: 1, mobile: 1, username: 1, dob: 1, password: 1 })
 
         if (!user) {
             throw TryError("Invalid email/phone or password", 400);
@@ -128,7 +121,6 @@ const login = async (req, res) => {
         const tokenData = {
             id: user._id,
             email: user.email,
-            number: user.number,
             username: user.username,
             dob: user.dob
         }
@@ -208,8 +200,8 @@ const resetPassword = async (req, res) => {
         }
         const updatedPassword = await bcrypt.hash(newPassword.toString(), 12)
         user.password = updatedPassword
-        user.resetPasswordToken = null
-        user.resetPasswordExpires = null
+        user.set("resetPasswordToken", undefined);
+        user.set("resetPasswordExpires", undefined);
         await user.save()
 
         res.status(200).json({ message: "Password reset successful" })
